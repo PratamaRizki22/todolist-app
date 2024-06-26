@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/your-username/your-repo.git', branch: 'main', credentialsId: env.GIT_CREDENTIALS_ID
+                git url: 'https://github.com/PratamaRizki22/todolist-app.git', branch: 'master', credentialsId: env.GIT_CREDENTIALS_ID
             }
         }
 
