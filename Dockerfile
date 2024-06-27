@@ -8,20 +8,24 @@ RUN apt-get update && apt-get install -y sqlite3
 WORKDIR /app
 
 # Salin kode frontend dan backend ke direktori kerja
-COPY backend ./backend
-COPY frontend ./frontend
+COPY app/backend ./backend
+COPY app/frontend ./frontend
 
 # Instal dependencies backend
 RUN cd backend && npm install
 
-# Bangun aplikasi frontend
-RUN cd frontend && npm install && npm run build
-
-# Salin hasil build frontend ke direktori backend public
-RUN cp -r frontend/build backend/public
+# Instal dependencies frontend
+RUN cd frontend && npm install
 
 # Ekspose port yang akan digunakan oleh aplikasi
+EXPOSE 3000
 EXPOSE 5000
 
-# Jalankan server backend
-CMD ["node", "backend/index.js"]
+# Instal PM2 untuk menjalankan beberapa aplikasi
+RUN npm install -g pm2
+
+# Salin file proses PM2
+COPY ecosystem.config.js .
+
+# Jalankan server backend dan frontend menggunakan PM2
+CMD ["pm2-runtime", "start", "ecosystem.config.js"]
