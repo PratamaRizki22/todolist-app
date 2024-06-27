@@ -16,7 +16,7 @@ pipeline {
         stage('Build and Push Docker Image') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v2/', env.DOCKER_CREDENTIALS_ID) {
+                    docker.withRegistry('https://index.docker.io/v1/', env.DOCKER_CREDENTIALS_ID) {
                         docker.build('pratamarizki22/todolist-app/todolist-app', '.').push('latest')
                     }
                 }
