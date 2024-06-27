@@ -5,7 +5,7 @@ pipeline {
         DOCKER_CREDENTIALS_ID = 'docker-credentials'
         GIT_CREDENTIALS_ID = 'git-credentials'
         SSH_CREDENTIALS_ID = 'gce-ssh-key'
-        GCE_VM_IP = '35.202.78.230'  // Ganti dengan IP publik VM instance di GCE
+        GCE_VM_IP = '35.202.78.230'
     }
 
     stages {
