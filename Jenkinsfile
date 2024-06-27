@@ -16,7 +16,7 @@ pipeline {
         stage('Build and Push Docker Image') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', env.DOCKER_CREDENTIALS_ID) {
+                    docker.withRegistry('https://index.docker.io/v2/', env.DOCKER_CREDENTIALS_ID) {
                         docker.build('pratamarizki22/todolist-app/todolist-app', '.').push('latest')
                     }
                 }
@@ -30,7 +30,7 @@ pipeline {
                     sh 'docker stop todolist-app || true && docker rm todolist-app || true'
                     
                     // Jalankan kontainer baru
-                    sh 'docker run -d --name todolist-app -p 3000:3000 -p 5000:5000 your-docker-repo/todolist-app:latest'
+                    sh 'docker run -d --name todolist-app -p 3000:3000 -p 5000:5000 pratamarizki22/todolist-app:latest'
                 }
             }
         }
