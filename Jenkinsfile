@@ -3,37 +3,34 @@ pipeline {
 
     environment {
         DOCKER_CREDENTIALS_ID = 'docker-credentials'
-        KUBECONFIG_CREDENTIALS_ID = 'kubeconfig-credentials'
         GIT_CREDENTIALS_ID = 'git-credentials'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/PratamaRizki22/todolist-app.git', branch: 'master', credentialsId: env.GIT_CREDENTIALS_ID
+                git url: 'https://github.com/pratamarizki22/todolist-app.git', branch: 'master', credentialsId: env.GIT_CREDENTIALS_ID
             }
         }
 
-        stage('Build and Push Docker Images') {
+        stage('Build and Push Docker Image') {
             steps {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', env.DOCKER_CREDENTIALS_ID) {
-                        docker.build('your-docker-repo/frontend', './frontend').push('latest')
-                        docker.build('your-docker-repo/backend', './backend').push('latest')
+                        docker.build('pratamarizki22/todolist-app/todolist-app', '.').push('latest')
                     }
                 }
             }
         }
 
-        stage('Deploy to Kubernetes') {
+        stage('Deploy') {
             steps {
-                withCredentials([file(credentialsId: env.KUBECONFIG_CREDENTIALS_ID, variable: 'KUBECONFIG')]) {
-                    sh 'echo "$KUBECONFIG" > $HOME/.kube/config'
-                    sh 'kubectl apply -f k8s/sqlite-pv.yaml'
-                    sh 'kubectl apply -f k8s/sqlite-pvc.yaml'
-                    sh 'kubectl apply -f k8s/sqlite-deployment.yaml'
-                    sh 'kubectl apply -f k8s/backend-deployment.yaml'
-                    sh 'kubectl apply -f k8s/frontend-deployment.yaml'
+                script {
+                    // Hentikan kontainer yang berjalan jika ada
+                    sh 'docker stop todolist-app || true && docker rm todolist-app || true'
+                    
+                    // Jalankan kontainer baru
+                    sh 'docker run -d --name todolist-app -p 3000:3000 -p 5000:5000 your-docker-repo/todolist-app:latest'
                 }
             }
         }
