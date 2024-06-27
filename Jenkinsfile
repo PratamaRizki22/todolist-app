@@ -4,6 +4,8 @@ pipeline {
     environment {
         DOCKER_CREDENTIALS_ID = 'docker-credentials'
         GIT_CREDENTIALS_ID = 'git-credentials'
+        SSH_CREDENTIALS_ID = 'gce-ssh-key'
+        GCE_VM_IP = '35.202.78.230'  // Ganti dengan IP publik VM instance di GCE
     }
 
     stages {
@@ -23,14 +25,17 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy to GCE') {
             steps {
-                script {
-                    // Hentikan kontainer yang berjalan jika ada
-                    sh 'docker stop todolist-app || true && docker rm todolist-app || true'
-                    
-                    // Jalankan kontainer baru
-                    sh 'docker run -d --name todolist-app -p 3000:3000 -p 5000:5000 pratamarizki22/todolist-app:latest'
+                sshagent([env.SSH_CREDENTIALS_ID]) {
+                    sh '''
+                    ssh -o StrictHostKeyChecking=no root@$GCE_VM_IP "
+                    docker pull pratamarizki22/todolist-app:latest &&
+                    docker stop todolist-app || true &&
+                    docker rm todolist-app || true &&
+                    docker run -d --name todolist-app -p 3000:3000 -p 5000:5000 pratamarizki22/todolist-app:latest
+                    "
+                    '''
                 }
             }
         }
