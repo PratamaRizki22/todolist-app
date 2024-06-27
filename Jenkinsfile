@@ -29,7 +29,7 @@ pipeline {
             steps {
                 sshagent([env.SSH_CREDENTIALS_ID]) {
                     sh '''
-                    ssh -o StrictHostKeyChecking=no root@$GCE_VM_IP "
+                    ssh -o StrictHostKeyChecking=no dominepa@$GCE_VM_IP "
                     docker pull pratamarizki22/todolist-app:latest &&
                     docker stop todolist-app || true &&
                     docker rm todolist-app || true &&
