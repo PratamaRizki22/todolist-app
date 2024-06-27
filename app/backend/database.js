@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 // Tentukan lokasi penyimpanan database di luar folder backend
-const dbPath = path.resolve(__dirname, '../data/todolist.db');
+const dbPath = path.resolve(__dirname, '../../data/todolist.db');
 
 // Periksa apakah direktori ada, jika tidak, buatlah
 const dir = path.dirname(dbPath);
