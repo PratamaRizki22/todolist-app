@@ -6,7 +6,12 @@ const todoRoutes = require('./routes/todos');
 
 const app = express();
 
-app.use(cors());  // Gunakan middleware CORS
+app.use(cors({
+  origin: '*',
+  methods: 'GET,POST,PUT,DELETE',
+  credentials: true
+}));
+
 app.use(bodyParser.json());
 
 app.use('/api/auth', authRoutes);
