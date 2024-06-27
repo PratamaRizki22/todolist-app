@@ -17,7 +17,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', env.DOCKER_CREDENTIALS_ID) {
-                        docker.build('pratamarizki22/todolist-app/todolist-app', '.').push('latest')
+                        docker.build('pratamarizki22/todolist-app', '.').push('latest')
                     }
                 }
             }
