@@ -10,10 +10,10 @@ module.exports = {
     },
     {
       name: "frontend",
-      script: "npm",
-      args: "start",
+      script: "sh",
+      args: "-c 'npm run build && serve -s build'",
       cwd: "frontend",
-      watch: true,
+      watch: false,
       env: {
         NODE_ENV: "production",
       },
