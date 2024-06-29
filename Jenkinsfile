@@ -39,7 +39,7 @@ pipeline {
                 sshagent([env.SSH_CREDENTIALS_ID]) {
                     script {
                         sh """
-                        ssh -o StrictHostKeyChecking=no jenkins-server@$GCE_VM_IP << EOF
+                        ssh -o StrictHostKeyChecking=no jenkins-server@$GCE_VM_IP
                         docker stop todolist-app || true
                         docker rm todolist-app || true
                         docker pull $IMAGE_NAME
