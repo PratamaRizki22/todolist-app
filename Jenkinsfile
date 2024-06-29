@@ -19,7 +19,7 @@ pipeline {
         stage('Docker Composer') {
             steps {
                 script {
-                    sh 'docker-compose up'
+                    sh 'docker-compose create'
                 }
             }
         }
