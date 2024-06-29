@@ -43,9 +43,7 @@ pipeline {
                         ssh -t -o StrictHostKeyChecking=no jenkins-server@$GCE_VM_IP
                         docker stop todolist-app || true
                         docker rm todolist-app || true
-                        for i in {1..5}; do
-                            docker pull $IMAGE_NAME && break || sleep 30
-                        done
+                        docker pull $IMAGE_NAME
                         docker run -d --name todolist-app -p 0.0.0.0:3000:3000 -p 0.0.0.0:5000:5000 $IMAGE_NAME
                         """
                     }
