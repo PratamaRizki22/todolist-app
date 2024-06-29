@@ -18,9 +18,7 @@ pipeline {
         stage('Build and Push Docker Compose') {
             steps {
                 script {
-                    // Build Docker Compose services
                     sh 'docker-compose build'
-                    // Push Docker images to Docker Hub (optional, if using a registry)
                     sh 'docker-compose push'
                 }
             }
@@ -31,7 +29,7 @@ pipeline {
                 sshagent([env.SSH_CREDENTIALS_ID]) {
                     script {
                         sh '''
-                        scp -o StrictHostKeyChecking=no docker-compose.yml jenkins-server@$GCE_VM_IP:/home/jenkins-server/docker-compose.yml
+                        scp -i ~/.ssh/id_rsa_jenkins -o StrictHostKeyChecking=no docker-compose.yml jenkins-server@$GCE_VM_IP:/home/jenkins-server/docker-compose.yml
                         '''
                     }
                 }
@@ -42,7 +40,7 @@ pipeline {
             steps {
                 sshagent([env.SSH_CREDENTIALS_ID]) {
                     sh '''
-                    ssh -o StrictHostKeyChecking=no jenkins-server@$GCE_VM_IP '
+                    ssh -i ~/.ssh/id_rsa_jenkins -o StrictHostKeyChecking=no jenkins-server@$GCE_VM_IP '
                     docker-compose -f /home/jenkins-server/docker-compose.yml pull &&
                     docker-compose -f /home/jenkins-server/docker-compose.yml down &&
                     docker-compose -f /home/jenkins-server/docker-compose.yml up -d
