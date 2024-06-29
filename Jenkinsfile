@@ -6,7 +6,6 @@ pipeline {
         GIT_CREDENTIALS_ID = 'git-credentials'
         SSH_CREDENTIALS_ID = 'gce-ssh-key'
         GCE_VM_IP = '35.202.78.230'
-        IMAGE_NAME = 'your-dockerhub-username/your-image-name'
     }
 
     stages {
@@ -38,9 +37,14 @@ pipeline {
             steps {
                 sshagent([env.SSH_CREDENTIALS_ID]) {
                     script {
-                        sh '''
-                        scp -o StrictHostKeyChecking=no -r . jenkins-server@$GCE_VM_IP:/home/jenkins-server/todolist-app/
-                        '''
+                        // Membuat direktori di GCE jika belum ada
+                        sh """
+                        ssh -o StrictHostKeyChecking=no jenkins-server@$GCE_VM_IP 'mkdir -p /home/jenkins-server/todolist-app'
+                        """
+
+                        sh """
+                        scp -o StrictHostKeyChecking=no -r * jenkins-server@$GCE_VM_IP:/home/jenkins-server/todolist-app/
+                        """
                     }
                 }
             }
@@ -50,13 +54,13 @@ pipeline {
             steps {
                 sshagent([env.SSH_CREDENTIALS_ID]) {
                     script {
-                        sh '''
+                        sh """
                         ssh -o StrictHostKeyChecking=no jenkins-server@$GCE_VM_IP '
                         cd /home/jenkins-server/todolist-app &&
                         docker-compose down &&
                         docker-compose up -d
                         '
-                        '''
+                        """
                     }
                 }
             }
