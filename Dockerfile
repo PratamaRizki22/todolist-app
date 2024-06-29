@@ -1,14 +1,5 @@
 FROM node:20
 
-RUN rm -rf /var/lib/apt/lists/* /var/lib/dpkg/info/*
-
-RUN apt-get update \
-    && apt-get install -y --reinstall dpkg
-
-RUN dpkg --clear-avail \
-    && apt-get update
-
-
 RUN apt-get update && apt-get install -y sqlite3
 
 WORKDIR /app
