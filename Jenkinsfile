@@ -6,6 +6,7 @@ pipeline {
         GIT_CREDENTIALS_ID = 'git-credentials'
         SSH_CREDENTIALS_ID = 'gce-ssh-key'
         GCE_VM_IP = '35.202.78.230'
+        IMAGE_NAME = 'pratamarizki22/todolist-app'
     }
 
     stages {
@@ -18,7 +19,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'docker-compose build'
+                    sh 'docker build -t $IMAGE_NAME .'
                 }
             }
         }
@@ -27,24 +28,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', env.DOCKER_CREDENTIALS_ID) {
-                        sh 'docker-compose push'
-                    }
-                }
-            }
-        }
-
-        stage('Copy Files to GCE') {
-            steps {
-                sshagent([env.SSH_CREDENTIALS_ID]) {
-                    script {
-                        // Membuat direktori di GCE jika belum ada
-                        sh """
-                        ssh -o StrictHostKeyChecking=no jenkins-server@$GCE_VM_IP 'mkdir -p /home/jenkins-server/todolist-app'
-                        """
-
-                        sh """
-                        scp -o StrictHostKeyChecking=no -r * jenkins-server@$GCE_VM_IP:/home/jenkins-server/todolist-app/
-                        """
+                        sh 'docker push $IMAGE_NAME'
                     }
                 }
             }
@@ -54,13 +38,14 @@ pipeline {
             steps {
                 sshagent([env.SSH_CREDENTIALS_ID]) {
                     script {
-                        sh """
+                        sh '''
                         ssh -o StrictHostKeyChecking=no jenkins-server@$GCE_VM_IP '
-                        cd /home/jenkins-server/todolist-app &&
-                        docker-compose down &&
-                        docker-compose up -d
+                        docker pull $IMAGE_NAME &&
+                        docker stop todolist-app || true &&
+                        docker rm todolist-app || true &&
+                        docker run -d --name todolist-app -p 3000:3000 -p 5000:5000 $IMAGE_NAME
                         '
-                        """
+                        '''
                     }
                 }
             }
