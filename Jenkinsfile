@@ -24,12 +24,12 @@ pipeline {
             }
         }
 
-        stage('Copy Docker Compose to GCE') {
+        stage('Copy Files to GCE') {
             steps {
                 sshagent([env.SSH_CREDENTIALS_ID]) {
                     script {
                         sh '''
-                        scp -i ~/.ssh/id_rsa_jenkins -o StrictHostKeyChecking=no docker-compose.yml jenkins-server@$GCE_VM_IP:/home/jenkins-server/docker-compose.yml
+                        scp -o StrictHostKeyChecking=no docker-compose.yml Dockerfile jenkins-server@$GCE_VM_IP:/home/jenkins-server/
                         '''
                     }
                 }
