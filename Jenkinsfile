@@ -38,8 +38,8 @@ pipeline {
                 sshagent([env.SSH_CREDENTIALS_ID]) {
                     script {
                         sh '''
-                        scp -o StrictHostKeyChecking=no docker-compose.yml jenkins-server@instance-20240627-124639@$GCE_VM_IP:/home/jenkins-server/docker-compose.yml
-                        ssh -o StrictHostKeyChecking=no jenkins-server@instance-20240627-124639@$GCE_VM_IP '
+                        scp -o StrictHostKeyChecking=no docker-compose.yml jenkins-server@$GCE_VM_IP:/home/jenkins-server/docker-compose.yml
+                        ssh -o StrictHostKeyChecking=no jenkins-server@$GCE_VM_IP '
                         docker-compose -f /home/jenkins-server/docker-compose.yml down &&
                         docker-compose -f /home/jenkins-server/docker-compose.yml up -d
                         '
