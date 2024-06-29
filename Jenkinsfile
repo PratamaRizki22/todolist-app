@@ -16,10 +16,10 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Docker Composer') {
             steps {
                 script {
-                    sh 'docker build -t $IMAGE_NAME .'
+                    sh 'docker-compose up -d'
                 }
             }
         }
