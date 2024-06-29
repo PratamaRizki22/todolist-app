@@ -38,14 +38,14 @@ pipeline {
             steps {
                 sshagent([env.SSH_CREDENTIALS_ID]) {
                     script {
-                        sh '''
-                        ssh -o StrictHostKeyChecking=no jenkins-server@$GCE_VM_IP '
-                        docker stop todolist-app || true &&
-                        docker pull $IMAGE_NAME &&
-                        docker rm todolist-app || true &&
+                        sh """
+                        ssh -o StrictHostKeyChecking=no jenkins-server@$GCE_VM_IP << EOF
+                        docker stop todolist-app || true
+                        docker rm todolist-app || true
+                        docker pull $IMAGE_NAME
                         docker run -d --name todolist-app -p 3000:3000 -p 5000:5000 $IMAGE_NAME
-                        '
-                        '''
+                        EOF
+                        """
                     }
                 }
             }
