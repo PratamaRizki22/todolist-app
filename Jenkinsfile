@@ -15,22 +15,19 @@ pipeline {
             }
         }
 
-        stage('Build and Push Docker Compose') {
+        stage('Build Docker Image') {
             steps {
                 script {
                     sh 'docker-compose build'
-                    sh 'docker-compose push'
                 }
             }
         }
 
-        stage('Copy Files to GCE') {
+        stage('Push Docker Image') {
             steps {
-                sshagent([env.SSH_CREDENTIALS_ID]) {
-                    script {
-                        sh '''
-                        scp -o StrictHostKeyChecking=no docker-compose.yml Dockerfile jenkins-server@$GCE_VM_IP:/home/jenkins-server/
-                        '''
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', env.DOCKER_CREDENTIALS_ID) {
+                        sh 'docker-compose push'
                     }
                 }
             }
@@ -39,13 +36,15 @@ pipeline {
         stage('Deploy to GCE') {
             steps {
                 sshagent([env.SSH_CREDENTIALS_ID]) {
-                    sh '''
-                    ssh -i ~/.ssh/id_rsa_jenkins -o StrictHostKeyChecking=no jenkins-server@$GCE_VM_IP '
-                    docker-compose -f /home/jenkins-server/docker-compose.yml pull &&
-                    docker-compose -f /home/jenkins-server/docker-compose.yml down &&
-                    docker-compose -f /home/jenkins-server/docker-compose.yml up -d
-                    '
-                    '''
+                    script {
+                        sh '''
+                        scp -o StrictHostKeyChecking=no docker-compose.yml jenkins-server@instance-20240627-124639@$GCE_VM_IP:/home/jenkins-server/docker-compose.yml
+                        ssh -o StrictHostKeyChecking=no jenkins-server@instance-20240627-124639@$GCE_VM_IP '
+                        docker-compose -f /home/jenkins-server/docker-compose.yml down &&
+                        docker-compose -f /home/jenkins-server/docker-compose.yml up -d
+                        '
+                        '''
+                    }
                 }
             }
         }
