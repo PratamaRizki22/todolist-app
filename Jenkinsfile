@@ -9,6 +9,19 @@ pipeline {
     }
 
     stages {
+        stage('Install Docker Compose') {
+            steps {
+                script {
+                    sh '''
+                    if ! [ -x "$(command -v docker-compose)" ]; then
+                      sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+                      sudo chmod +x /usr/local/bin/docker-compose
+                    fi
+                    '''
+                }
+            }
+        }
+
         stage('Checkout') {
             steps {
                 git url: 'https://github.com/pratamarizki22/todolist-app.git', branch: 'master', credentialsId: env.GIT_CREDENTIALS_ID
@@ -18,9 +31,7 @@ pipeline {
         stage('Build and Push Docker Compose') {
             steps {
                 script {
-                    // Build Docker Compose services
                     sh 'docker-compose build'
-                    // Push Docker images to Docker Hub (optional, if using a registry)
                     sh 'docker-compose push'
                 }
             }
