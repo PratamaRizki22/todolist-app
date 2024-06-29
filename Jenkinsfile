@@ -15,12 +15,23 @@ pipeline {
             }
         }
 
-        stage('Build and Push Docker Image') {
+        stage('Build and Push Docker Compose') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', env.DOCKER_CREDENTIALS_ID) {
-                        docker.build('pratamarizki22/todolist-app', '.').push('latest')
-                    }
+                    // Build Docker Compose services
+                    sh 'docker-compose build'
+                    // Push Docker images to Docker Hub (optional, if using a registry)
+                    sh 'docker-compose push'
+                }
+            }
+        }
+
+        stage('Copy Docker Compose to GCE') {
+            steps {
+                sshagent([env.SSH_CREDENTIALS_ID]) {
+                    sh '''
+                    scp -o StrictHostKeyChecking=no docker-compose.yml dominepa@$GCE_VM_IP:/home/dominepa/docker-compose.yml
+                    '''
                 }
             }
         }
@@ -29,12 +40,11 @@ pipeline {
             steps {
                 sshagent([env.SSH_CREDENTIALS_ID]) {
                     sh '''
-                    ssh -o StrictHostKeyChecking=no dominepa@$GCE_VM_IP "
-                    docker pull pratamarizki22/todolist-app:latest &&
-                    docker stop todolist-app || true &&
-                    docker rm todolist-app || true &&
-                    docker run -d --name todolist-app -p 3000:3000 -p 5000:5000 pratamarizki22/todolist-app:latest
-                    "
+                    ssh -o StrictHostKeyChecking=no dominepa@$GCE_VM_IP '
+                    docker-compose -f /home/dominepa/docker-compose.yml pull &&
+                    docker-compose -f /home/dominepa/docker-compose.yml down &&
+                    docker-compose -f /home/dominepa/docker-compose.yml up -d
+                    '
                     '''
                 }
             }
