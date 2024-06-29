@@ -44,7 +44,6 @@ pipeline {
                         docker rm todolist-app || true
                         docker pull $IMAGE_NAME
                         docker run -d --name todolist-app -p 3000:3000 -p 5000:5000 $IMAGE_NAME
-                        EOF
                         """
                     }
                 }
