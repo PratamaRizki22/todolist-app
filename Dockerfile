@@ -25,8 +25,8 @@ RUN npm install -g serve
 RUN npm install -g pm2
 
 
-EXPOSE 3000
-EXPOSE 5000
+# EXPOSE 3000
+# EXPOSE 5000
 
 
 # Salin file proses PM2
