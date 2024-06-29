@@ -34,22 +34,26 @@ pipeline {
             }
         }
 
+
         stage('Deploy to GCE') {
             steps {
                 sshagent([env.SSH_CREDENTIALS_ID]) {
                     script {
                         sh """
-                        ssh -o StrictHostKeyChecking=no jenkins-server@$GCE_VM_IP
+                        ssh -t -o StrictHostKeyChecking=no jenkins-server@$GCE_VM_IP
                         docker stop todolist-app || true
                         docker rm todolist-app || true
-                        docker pull $IMAGE_NAME
-                        docker run -d --name todolist-app -p 3000:3000 -p 5000:5000 $IMAGE_NAME
+                        for i in {1..5}; do
+                            docker pull $IMAGE_NAME && break || sleep 30
+                        done
+                        docker run -d --name todolist-app -p 0.0.0.0:3000:3000 -p 0.0.0.0:5000:5000 $IMAGE_NAME
                         """
                     }
                 }
             }
         }
     }
+
 
     post {
         always {
