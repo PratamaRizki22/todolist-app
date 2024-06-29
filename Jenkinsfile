@@ -41,7 +41,7 @@ pipeline {
             steps {
                 sshagent([env.SSH_CREDENTIALS_ID]) {
                     sh '''
-                    scp -o StrictHostKeyChecking=no docker-compose.yml jenkis-server@$GCE_VM_IP:/home/jenkis-server/docker-compose.yml
+                    scp -o StrictHostKeyChecking=no docker-compose.yml jenkins-server@$GCE_VM_IP:/home/jenkins-server/docker-compose.yml
                     '''
                 }
             }
@@ -51,10 +51,10 @@ pipeline {
             steps {
                 sshagent([env.SSH_CREDENTIALS_ID]) {
                     sh '''
-                    ssh -o StrictHostKeyChecking=no jenkis-server@$GCE_VM_IP '
-                    docker-compose -f /home/jenkis-server/docker-compose.yml pull &&
-                    docker-compose -f /home/jenkis-server/docker-compose.yml down &&
-                    docker-compose -f /home/jenkis-server/docker-compose.yml up -d
+                    ssh -o StrictHostKeyChecking=no jenkins-server@$GCE_VM_IP '
+                    docker-compose -f /home/jenkins-server/docker-compose.yml pull &&
+                    docker-compose -f /home/jenkins-server/docker-compose.yml down &&
+                    docker-compose -f /home/jenkins-server/docker-compose.yml up -d
                     '
                     '''
                 }
