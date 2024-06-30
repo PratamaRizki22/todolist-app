@@ -16,10 +16,10 @@ pipeline {
             }
         }
 
-        stage('Docker Composer') {
+        stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'docker-compose -p todolist-app create'
+                    sh 'docker-compose build'
                 }
             }
         }
@@ -28,28 +28,29 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', env.DOCKER_CREDENTIALS_ID) {
-                        sh 'docker push $IMAGE_NAME'
+                        sh 'docker-compose push'
                     }
                 }
             }
         }
-
 
         stage('Deploy to GCE') {
             steps {
                 sshagent([env.SSH_CREDENTIALS_ID]) {
                     script {
                         sh """
-                        ssh -o StrictHostKeyChecking=no dominepa@$GCE_VM_IP 'docker stop todolist-app || true'
-                        ssh -o StrictHostKeyChecking=no dominepa@$GCE_VM_IP 'docker rm todolist-app || true'
-                        ssh -o StrictHostKeyChecking=no dominepa@$GCE_VM_IP 'docker run -d --name todolist-app -p 3000:3000 -p 5000:5000 $IMAGE_NAME:latest'
+                        ssh -o StrictHostKeyChecking=no jenkins-server@$GCE_VM_IP '
+                        docker pull $IMAGE_NAME:latest &&
+                        docker stop todolist-app || true &&
+                        docker rm todolist-app || true &&
+                        docker run -d --name todolist-app -p 3000:3000 -p 5000:5000 $IMAGE_NAME:latest
+                        '
                         """
                     }
                 }
             }
         }
     }
-
 
     post {
         always {
