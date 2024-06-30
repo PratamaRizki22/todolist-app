@@ -19,7 +19,7 @@ pipeline {
         stage('Docker Composer') {
             steps {
                 script {
-                    sh 'docker-compose up --no-start'
+                    sh 'docker-compose -p $IMAGE_NAME create'
                 }
             }
         }
