@@ -40,7 +40,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', env.DOCKER_CREDENTIALS_ID) {
-                        sh 'docker push $IMAGE_NAME:latest'
+                        sh """docker push $IMAGE_NAME:latest"""
                     }
                 }
             }
