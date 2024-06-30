@@ -6,11 +6,20 @@ const todoRoutes = require('./routes/todos');
 
 const app = express();
 
-app.use(cors({
+const corsOptions = {
   origin: '*',
-  methods: 'GET,POST,PUT,DELETE',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
-}));
+};
+
+app.use(cors(corsOptions));
+
+// app.use(cors({
+//   origin: '*',
+//   methods: 'GET,POST,PUT,DELETE',
+//   credentials: true
+// }));
 
 app.use(bodyParser.json());
 
