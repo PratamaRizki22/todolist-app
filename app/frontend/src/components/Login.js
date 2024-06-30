@@ -15,7 +15,7 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      const response = await axios.post('http://35.202.78.230:5000/api/auth/login', { email, password });
       localStorage.setItem('token', response.data.token);
       alert('Login successful!');
       navigate('/todos');

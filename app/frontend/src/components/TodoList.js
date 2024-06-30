@@ -21,7 +21,7 @@ function TodoList() {
           navigate('/login');
           return;
         }
-        const response = await axios.get('http://localhost:5000/api/todos', {
+        const response = await axios.get('http://35.202.78.230:5000/api/todos', {
           headers: { 'x-auth-token': token }
         });
         setTodos(response.data);
@@ -38,7 +38,7 @@ function TodoList() {
     if (newTodo.trim()) {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.post('http://localhost:5000/api/todos', { text: newTodo }, {
+        const response = await axios.post('http://35.202.78.230:5000/api/todos', { text: newTodo }, {
           headers: { 'x-auth-token': token }
         });
         setTodos([...todos, response.data]);
@@ -53,7 +53,7 @@ function TodoList() {
     try {
       const token = localStorage.getItem('token');
       const todo = todos.find(todo => todo.id === id);
-      const response = await axios.put(`http://localhost:5000/api/todos/${id}`, {
+      const response = await axios.put(`http://35.202.78.230:5000/api/todos/${id}`, {
         text: todo.text,
         completed: !todo.completed
       }, {
@@ -68,7 +68,7 @@ function TodoList() {
   const handleDeleteTodo = async (id) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/todos/${id}`, {
+      await axios.delete(`http://35.202.78.230:5000/api/todos/${id}`, {
         headers: { 'x-auth-token': token }
       });
       setTodos(todos.filter(todo => todo.id !== id));
@@ -88,7 +88,7 @@ function TodoList() {
     if (editingText.trim()) {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.put(`http://localhost:5000/api/todos/${editingTodo}`, {
+        const response = await axios.put(`http://35.202.78.230:5000/api/todos/${editingTodo}`, {
           text: editingText,
           completed: todos.find(todo => todo.id === editingTodo).completed
         }, {
