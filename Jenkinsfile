@@ -18,7 +18,7 @@ pipeline {
 
         stage('Docker Composer') {
             steps {
-                script {
+                script {                    s
                     sh 'docker-compose -p todolist-app create'
                 }
             }
