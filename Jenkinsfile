@@ -51,9 +51,9 @@ pipeline {
                 sshagent([env.SSH_CREDENTIALS_ID]) {
                     script {
                         sh """
-                        ssh -o StrictHostKeyChecking=no dominepa@$GCE_VM_IP 'docker stop $IMAGE_NAME:latest || true'
-                        ssh -o StrictHostKeyChecking=no dominepa@$GCE_VM_IP 'docker rm $IMAGE_NAME:latest || true'
-                        ssh -o StrictHostKeyChecking=no dominepa@$GCE_VM_IP 'docker rmi $IMAGE_NAME:latest || true'
+                        ssh -o StrictHostKeyChecking=no dominepa@$GCE_VM_IP 'docker stop todolist-app || true'
+                        ssh -o StrictHostKeyChecking=no dominepa@$GCE_VM_IP 'docker rm todolist-app || true'
+                        ssh -o StrictHostKeyChecking=no dominepa@$GCE_VM_IP 'docker rmi $IMAGE_NAME || true'
                         ssh -o StrictHostKeyChecking=no dominepa@$GCE_VM_IP 'docker pull $IMAGE_NAME:latest'
                         ssh -o StrictHostKeyChecking=no dominepa@$GCE_VM_IP 'docker run -d --name todolist-app -p 3000:3000 -p 5000:5000 $IMAGE_NAME:latest'
                         """

@@ -9,7 +9,7 @@ const app = express();
 const corsOptions = {
   origin: 'http://35.202.78.230:3000', // Sesuaikan dengan domain frontend Anda
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token'],
   credentials: true
 };
 
