@@ -1,6 +1,7 @@
 {
   "name": "todo-list-app",
   "version": "0.1.0",
+  "proxy":"http://35.202.78.230:5000",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.4",
