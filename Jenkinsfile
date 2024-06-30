@@ -22,7 +22,7 @@ pipeline {
                     sh """
                     docker stop $IMAGE_NAME:latest || true &&
                     docker rm $IMAGE_NAME:latest || true &&
-                    docker rmi -f \$(docker images -q $IMAGE_NAME:latest) || true
+                    docker rmi images -q $IMAGE_NAME:latest || true
                     """
                 }
             }
@@ -31,7 +31,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'docker-compose build'
+                    sh 'docker-compose build --no-cache'
                 }
             }
         }
