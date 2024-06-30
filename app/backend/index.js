@@ -7,19 +7,13 @@ const todoRoutes = require('./routes/todos');
 const app = express();
 
 const corsOptions = {
-  origin: '*',
+  origin: 'http://35.202.78.230:3000', // Sesuaikan dengan domain frontend Anda
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 };
 
-app.use(cors(corsOptions));
-
-// app.use(cors({
-//   origin: '*',
-//   methods: 'GET,POST,PUT,DELETE',
-//   credentials: true
-// }));
+app.use(cors(corsOptions))
 
 app.use(bodyParser.json());
 
