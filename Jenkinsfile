@@ -16,6 +16,18 @@ pipeline {
             }
         }
 
+        stage('Clean Old Docker Images') {
+            steps {
+                script {
+                    sh """
+                    docker stop $IMAGE_NAME:latest || true &&
+                    docker rm $IMAGE_NAME:latest || true &&
+                    docker rmi -f \$(docker images -q $IMAGE_NAME:latest) || true
+                    """
+                }
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 script {
@@ -40,9 +52,9 @@ pipeline {
                     script {
                         sh """
                         ssh -o StrictHostKeyChecking=no jenkins-server@$GCE_VM_IP '
+                        docker stop $IMAGE_NAME:latest || true &&
+                        docker rm $IMAGE_NAME:latest || true &&
                         docker pull $IMAGE_NAME:latest &&
-                        docker stop todolist-app || true &&
-                        docker rm todolist-app || true &&
                         docker run -d --name todolist-app -p 3000:3000 -p 5000:5000 $IMAGE_NAME:latest
                         '
                         """
