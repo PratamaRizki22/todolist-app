@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha backend/tests --timeout 10000"
   },
   "keywords": [],
   "author": "",
@@ -17,5 +17,10 @@
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "chai": "^5.1.1",
+    "mocha": "^10.5.2",
+    "sinon": "^18.0.0"
   }
 }
