@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "mocha backend/tests --timeout 10000"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
