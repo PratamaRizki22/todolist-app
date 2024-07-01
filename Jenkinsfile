@@ -15,7 +15,33 @@ pipeline {
                 git url: 'https://github.com/pratamarizki22/todolist-app.git', branch: 'master', credentialsId: env.GIT_CREDENTIALS_ID
             }
         }
+        
+        stage('Install Jest') {
+            steps {
+                dir('app/backend') {
+                    script {
+                        sh 'npm install jest --save-dev'
+                        sh 'npm install --save-dev supertest'
+                    }
+                }
+            }
+        }
 
+        stage('Run Unit Tests') {
+            steps {
+                dir('app/backend') {
+                    script {
+                        sh 'npm test'
+                    }
+                }
+            }
+            post {
+                failure {
+                    cleanWs()
+                    error('Unit tests failed, workspace cleaned.')
+                }
+            }
+        }
         stage('Clean Old Docker Images') {
             steps {
                 script {
