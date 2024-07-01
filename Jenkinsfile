@@ -35,7 +35,8 @@ pipeline {
                     }
                 }
             }
-
+  
+        }
         stage('Clean Old Docker Images') {
             steps {
                 script {
