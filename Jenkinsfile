@@ -35,13 +35,7 @@ pipeline {
                     }
                 }
             }
-            post {
-                failure {
-                    cleanWs()
-                    error('Unit tests failed, workspace cleaned.')
-                }
-            }
-        }
+
         stage('Clean Old Docker Images') {
             steps {
                 script {
